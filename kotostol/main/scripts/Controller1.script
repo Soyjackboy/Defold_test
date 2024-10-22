@@ -1,0 +1,31 @@
+function init(self) 
+	self.spawn_point = nil  -- точка появления объекта
+	self.is_happy = false -- статус появления животного
+	msg.post(".", "acquire_input_focus") 
+end
+
+local function freeAnimal(self) -- метод для удаления объекта
+	msg.post(self.spawn_point, "change_value")
+	go.delete(".")
+	
+end
+
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("spawn_point") then 
+		self.spawn_point = sender 
+	end
+		
+end
+
+function on_input(self, action_id, action)
+
+	if action_id == hash("touch") or action_id == hash("space") then -- При нажатии кот появляется
+		self.is_happy = true 
+	end
+	if action_id == hash("c_button") or action_id == hash("right_click") then  -- При нажатии кот исчезает
+		if self.is_happy  then 
+			freeAnimal(self) 
+		end
+	end
+end

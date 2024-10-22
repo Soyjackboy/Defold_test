@@ -1,0 +1,36 @@
+go.property("spawn_delay", 3) -- задаем изначальный таймер появления объекта
+local function spawnCat()
+	local animal = factory.create("#animalFactory") -- создаем переменную для создания объекта
+	
+	msg.post(animal, "spawn_point") 
+end 
+
+function init(self)
+	self.timer = self.spawn_delay  
+	self.is_ocuppied = false -- статус есть ли объект на сцене или нет 
+	self.timer_running = true 	
+end
+
+
+function update(self, dt)
+	if self.timer_running then  -- если переменная timer_running = true , то таймер начинает идти
+		self.timer = self.timer - dt
+		if self.timer <= 0 and not self.is_ocuppied  then  -- если таймер кончился и точка спавна не занята, то спавнится объект
+			spawnCat()
+			self.timer_running = false
+			self.is_ocuppied = true 
+		end
+	end
+end
+
+
+
+
+function on_message(self, message_id, message, sender) 
+	if message_id == hash("change_value") then 
+		self.is_ocuppied = not self.is_ocuppied
+		self.timer  = self.spawn_delay 
+		self.timer_running = true 
+	end
+
+end
